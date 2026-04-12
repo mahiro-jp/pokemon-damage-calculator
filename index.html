@@ -9,6 +9,37 @@
 <body>
     <h1>ポケモン ダメージ計算ツール</h1>
     <div id="app">
+        <div class="container">
+            <section class="config-section">
+                <h2>攻撃側設定</h2>
+                <label>攻撃力: <input type="number" id="attacker-stats" value="150"></label><br>
+                <label>技威力: <input type="number" id="move-power" value="90"></label><br>
+                <label>タイプ相性:
+                    <select id="type-multiplier">
+                        <option value="4.00">x4</option>
+                        <option value="2.00">x2</option>
+                        <option value="1.00" selected>x1</option>
+                        <option value="0.50">x0.5</option>
+                        <option value="0.25">x0.25</option>
+                        <option value="0.00">x0</option>
+                    </select>
+            </section>
+            <section class="config-section">
+                <h2>防御側設定</h2>
+                <label>HP: <input type="number" id="defender-hp" value="175"></label><br>
+                <label>防御力: <input type="number" id="defender-stats" value="100"></label><br>
+            </section>
+
+            <button id="calc-btn">計算実行</button>
+
+            <hr>
+
+            <section id="result-area">
+                <h2>計算結果</h2>
+                <p>ダメージ: <span id="damage-range">---</span></p>
+                <p>割合: <span id="damage-percent">---</span></p>
+            </section>
+        </div>
     </div>
 
     <script src="js/calculator.js"></script>
