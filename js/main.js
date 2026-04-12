@@ -24,3 +24,9 @@ document.addEventListener( 'DOMContentLoaded', () => {
         percentEl.textContent = `${minPercent}% ～ ${maxPercent}%`;
     });
 });
+
+// Service Workerの登録
+if ( 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register( 'sw.js')
+        .then(() => console.log( 'Service Worker Registered'));
+}

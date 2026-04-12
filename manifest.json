@@ -1,0 +1,16 @@
+{
+  "short_name": "ダメ計",
+  "name": "ポケモン ダメージ計算ツール",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#e53e3e"
+}
