@@ -52,14 +52,35 @@ label {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    gap: 10px; /* ラベルと入力欄の間の最低限の隙間 */
 }
 
 input, select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 80px;
+    box-sizing: border-box; /* パディングを含めた幅計算にする */
+    font-size: 1rem;
+}
+
+/* ポケモン名の入力欄だけ幅を広くする */
+#attacker-name, #defender-name {
+    width: 160px; /* 6文字＋余裕を持たせたサイズ */
+}
+
+/* その他の数値入力とプルダウンの幅を統一する */
+input[type="number"], 
+select {
+    width: 100px;
+}
+
+/* 読み取り専用（実数値）の見た目 */
+input[readonly] {
+    background-color: #edf2f7;
+    border-color: #cbd5e0;
+    color: #4a5568;
+    cursor: not-allowed;
 }
 
 #calc-btn {

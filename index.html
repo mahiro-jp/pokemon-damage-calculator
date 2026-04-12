@@ -17,8 +17,22 @@
         <div class="container">
             <section class="config-section">
                 <h2>攻撃側設定</h2>
-                <label>攻撃力: <input type="number" id="attacker-stats" value="150"></label><br>
-                <label>技威力: <input type="number" id="move-power" value="90"></label><br>
+                <label>ポケモン名: 
+                    <input type="text" id="attacker-name" list="pokemon-list">
+                    <datalist id="pokemon-list"></datalist>
+                </label>
+                <label>性格補正: 
+                    <select id="attacker-nature">
+                        <option value="1.1">x1.1</option>
+                        <option value="1.0" selected>x1</option>
+                        <option value="0.9">x0.9</option>
+                    </select>
+                </label>
+                <label>能力ポイント: 
+                    <input type="number" id="attacker-point" value="0" min="0" max="32">
+                </label>
+                <label>攻撃実数値: <input type="number" id="attacker-stats" value="150" readonly></label>
+                <label>技威力: <input type="number" id="move-power" value="90"></label>
                 <label>タイプ相性:
                     <select id="type-multiplier">
                         <option value="4.00">x4</option>
@@ -31,8 +45,24 @@
             </section>
             <section class="config-section">
                 <h2>防御側設定</h2>
-                <label>HP: <input type="number" id="defender-hp" value="175"></label><br>
-                <label>防御力: <input type="number" id="defender-stats" value="100"></label><br>
+                <label>ポケモン名: 
+                    <input type="text" id="defender-name" list="pokemon-list">
+                </label>
+                <label>性格補正: 
+                    <select id="defender-nature">
+                        <option value="1.1">x1.1</option>
+                        <option value="1.0" selected>x1</option>
+                        <option value="0.9">x0.9</option>
+                    </select>
+                </label>
+                <label>HP能力ポイント: 
+                    <input type="number" id="defender-hp-point" value="0" min="0" max="32">
+                </label>
+                <label>HP実数値: <input type="number" id="defender-hp" value="175" readonly></label>
+                <label>防御能力ポイント: 
+                    <input type="number" id="defender-def-point" value="0" min="0" max="32">
+                </label>
+                <label>防御実数値: <input type="number" id="defender-stats" value="100" readonly></label>
             </section>
 
             <button id="calc-btn">計算実行</button>

@@ -1,4 +1,6 @@
 document.addEventListener( 'DOMContentLoaded', () => {
+    loadPokemonData();
+
     const calcBtn = document.getElementById( 'calc-btn');
 
     calcBtn.addEventListener( 'click', () => {
@@ -24,6 +26,78 @@ document.addEventListener( 'DOMContentLoaded', () => {
         percentEl.textContent = `${minPercent}% ～ ${maxPercent}%`;
     });
 });
+
+// 実数値を計算して画面に反映する関数
+function updateActualStats() {
+    const attackerName = document.getElementById( 'attacker-name').value;
+    const pokemon = pokemonMasterData.find( p => p.name === attackerName);
+
+    if ( pokemon) {
+        const point = Number( document.getElementById('attacker-point').value);
+        const nature = parseFloat( document.getElementById( 'attacker-nature').value);
+
+        // TODO 攻撃か特攻のどちらを使うか判断
+        const base = pokemon.baseStats.atk;
+        // 実数値の計算 (種族値 + 20 + 能力ポイント) * 性格補正
+        const actualStats = Math.floor( (base + 20 + point) * nature);
+
+        document.getElementById( 'attacker-stats').value = actualStats;
+    }
+}
+
+// 攻撃側のイベント登録
+document.getElementById( 'attacker-name').addEventListener( 'input', updateActualStats);
+document.getElementById( 'attacker-point').addEventListener( 'input', updateActualStats);
+document.getElementById( 'attacker-nature').addEventListener( 'change', updateActualStats);
+
+// 防御側の実数値を更新する関数
+function updateDefenderStats() {
+    const defenderName = document.getElementById( 'defender-name').value;
+    const pokemon = pokemonMasterData.find( p => p.name === defenderName);
+
+    if ( pokemon) {
+        const hpPoint = Number( document.getElementById( 'defender-hp-point').value);
+        const defPoint = Number( document.getElementById( 'defender-def-point').value);
+        const nature = parseFloat( document.getElementById( 'defender-nature').value);
+
+        // HP実数値の計算: 種族値 + 75 + ポイント
+        const actualHp = pokemon.baseStats.hp + 75 + hpPoint;
+
+        // 防御実数値の計算: (種族値 + 20 + ポイント) * 性格補正
+        const actualDef = Math.floor( (pokemon.baseStats.def + 20 + defPoint) * nature);
+
+        document.getElementById( 'defender-hp').value = actualHp;
+        document.getElementById( 'defender-stats').value = actualDef;
+    }
+}
+
+// 防御側のイベント登録
+document.getElementById( 'defender-name').addEventListener( 'input', updateDefenderStats);
+document.getElementById( 'defender-hp-point').addEventListener( 'input', updateDefenderStats);
+document.getElementById( 'defender-def-point').addEventListener( 'input', updateDefenderStats);
+document.getElementById( 'defender-nature').addEventListener( 'change', updateDefenderStats);
+
+let pokemonMasterData = [];
+
+// データの読み込み
+async function loadPokemonData() {
+    try {
+        const response = await fetch( 'data/pokemon.json');
+        const data = await response.json();
+        pokemonMasterData = data.pokemon;
+
+        // datalistに候補を追加
+        const list = document.getElementById( 'pokemon-list');
+        pokemonMasterData.forEach( p => {
+            const option = document.createElement( 'option');
+            option.value = p.name;
+            list.appendChild( option);
+        });
+        console.log( "ポケモンデータを読み込みました");
+    } catch ( error) {
+        console.error( "データの読み込みに失敗しました", error);
+    }
+}
 
 // Service Workerの登録
 if ( 'serviceWorker' in navigator) {
