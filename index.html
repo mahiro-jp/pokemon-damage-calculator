@@ -32,7 +32,12 @@
                     <input type="number" id="attacker-point" value="0" min="0" max="32">
                 </label>
                 <label>攻撃実数値: <input type="number" id="attacker-stats" value="150" readonly></label>
+                <label>技名: 
+                    <input type="text" id="move-name" list="move-list" placeholder="技を入力">
+                    <datalist id="move-list"></datalist>
+                </label>
                 <label>技威力: <input type="number" id="move-power" value="90"></label>
+                <input type="hidden" id="move-type">
                 <label>タイプ相性:
                     <select id="type-multiplier">
                         <option value="4.00">x4</option>

@@ -1,5 +1,5 @@
 document.addEventListener( 'DOMContentLoaded', () => {
-    loadPokemonData();
+    loadData();
 
     const calcBtn = document.getElementById( 'calc-btn');
 
@@ -11,13 +11,26 @@ document.addEventListener( 'DOMContentLoaded', () => {
         const hp = Number( document.getElementById('defender-hp').value);
         const defense = Number( document.getElementById('defender-stats').value);
 
+        // 2. タイプ一致補正の判定
+        const attackerName = document.getElementById( 'attacker-name').value;
+        const moveName = document.getElementById( 'move-name').value;
+
+        // データ群から選択中の個体を特定
+        const attacker = pokemonMasterData.find( p => p.name === attackerName);
+        const move = moveMasterData.find( m => m.name === moveName);
+
+        let isSameType = false;
+        if (attacker && move) {
+            // 攻撃側のタイプ配列に、技のタイプが含まれているかチェック
+            isSameType = attacker.types.includes(move.type);
+        }
+
         // 計算実行
-        const result = calculateDamage( attack, power, defense, multiplier);
+        const result = calculateDamage( attack, power, defense, multiplier, isSameType);
 
         // 結果の表示
         const rangeEl = document.getElementById( 'damage-range');
         const percentEl = document.getElementById( 'damage-percent');
-
         rangeEl.textContent = `${result.min} ～ ${result.max}`;
 
         // 割合の計算 (ダメージ / HP * 100)
@@ -78,15 +91,15 @@ document.getElementById( 'defender-def-point').addEventListener( 'input', update
 document.getElementById( 'defender-nature').addEventListener( 'change', updateDefenderStats);
 
 let pokemonMasterData = [];
+let moveMasterData = [];
 
 // データの読み込み
-async function loadPokemonData() {
+async function loadData() {
     try {
         const response = await fetch( 'data/pokemon.json');
         const data = await response.json();
         pokemonMasterData = data.pokemon;
 
-        // datalistに候補を追加
         const list = document.getElementById( 'pokemon-list');
         pokemonMasterData.forEach( p => {
             const option = document.createElement( 'option');
@@ -94,10 +107,34 @@ async function loadPokemonData() {
             list.appendChild( option);
         });
         console.log( "ポケモンデータを読み込みました");
+
+        const moveRes = await fetch( 'data/moves.json');
+        const moveData = await moveRes.json();
+        moveMasterData = moveData.moves;
+
+        const moveList = document.getElementById( 'move-list');
+        moveMasterData.forEach( m => {
+            const option = document.createElement( 'option');
+            option.value = m.name;
+            moveList.appendChild( option);
+        });
+        console.log( "技データを読み込みました");
     } catch ( error) {
         console.error( "データの読み込みに失敗しました", error);
     }
 }
+
+// 技とタイプ一致補正の更新
+function updateMovePower() {
+    const moveName = document.getElementById('move-name').value;
+    const move = moveMasterData.find(m => m.name === moveName);
+
+    if (move) {
+        document.getElementById('move-power').value = move.power;
+    }
+}
+
+document.getElementById('move-name').addEventListener('input', updateMovePower);
 
 // Service Workerの登録
 if ( 'serviceWorker' in navigator) {

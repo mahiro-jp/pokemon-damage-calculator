@@ -1,7 +1,7 @@
 /**
  * ダメージ計算を実行する関数
  */
-function calculateDamage( attack, power, defense, multiplier) {
+function calculateDamage( attack, power, defense, multiplier, isSameType) {
     // Lv50固定で定数化できる計算部分
     const levelConstant = 22; // (50 * 2 / 5 + 2)
 
@@ -9,6 +9,11 @@ function calculateDamage( attack, power, defense, multiplier) {
     let base = Math.floor( levelConstant * power * attack / defense);
     // 基本ダメージ (切り捨て)
     let baseDamage = Math.floor( base / 50) + 2;
+
+    // タイプ一致補正
+    if ( isSameType) {
+        baseDamage = Math.floor( baseDamage * 1.5);
+    }
 
     // タイプ相性の補正 (切り捨て)
     baseDamage = Math.floor( baseDamage * multiplier);
