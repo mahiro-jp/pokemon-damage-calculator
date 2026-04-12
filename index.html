@@ -31,12 +31,12 @@
                 <label>能力ポイント: 
                     <input type="number" id="attacker-point" value="0" min="0" max="32">
                 </label>
-                <label>攻撃実数値: <input type="number" id="attacker-stats" value="150" readonly></label>
+                <label>攻撃実数値: <input type="number" id="attacker-stats" value="0" readonly></label>
                 <label>技名: 
-                    <input type="text" id="move-name" list="move-list" placeholder="技を入力">
+                    <input type="text" id="move-name" list="move-list">
                     <datalist id="move-list"></datalist>
                 </label>
-                <label>技威力: <input type="number" id="move-power" value="90"></label>
+                <label>技威力: <input type="number" id="move-power" value="0"></label>
                 <input type="hidden" id="move-type">
                 <label>タイプ相性:
                     <select id="type-multiplier">
@@ -63,11 +63,11 @@
                 <label>HP能力ポイント: 
                     <input type="number" id="defender-hp-point" value="0" min="0" max="32">
                 </label>
-                <label>HP実数値: <input type="number" id="defender-hp" value="175" readonly></label>
+                <label>HP実数値: <input type="number" id="defender-hp" value="0" readonly></label>
                 <label>防御能力ポイント: 
                     <input type="number" id="defender-def-point" value="0" min="0" max="32">
                 </label>
-                <label>防御実数値: <input type="number" id="defender-stats" value="100" readonly></label>
+                <label>防御実数値: <input type="number" id="defender-stats" value="0" readonly></label>
             </section>
 
             <button id="calc-btn">計算実行</button>
