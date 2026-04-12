@@ -69,6 +69,10 @@ input, select {
     width: 160px; /* 6文字＋余裕を持たせたサイズ */
 }
 
+#move-name {
+    width: 200px;
+}
+
 /* その他の数値入力とプルダウンの幅を統一する */
 input[type="number"], 
 select {
