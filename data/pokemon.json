@@ -1,14 +1,19 @@
 {
   "pokemon": [
     {
-      "name": "リザードン",
-      "types": ["ほのお", "ひこう"],
-      "baseStats": { "hp": 78, "atk": 84, "def": 78, "spa": 109, "spd": 85, "spe": 100 }
+      "name": "ゲンガー",
+      "types": ["ゴースト", "どく"],
+      "baseStats": { "hp": 60, "atk": 65, "def": 60, "spa": 130, "spd": 75, "spe": 110 }
     },
     {
-      "name": "サザンドラ",
-      "types": ["あく", "ドラゴン"],
-      "baseStats": { "hp": 92, "atk": 105, "def": 90, "spa": 125, "spd": 90, "spe": 98 }
+      "name": "メガゲンガー",
+      "types": ["ゴースト", "どく"],
+      "baseStats": { "hp": 60, "atk": 65, "def": 80, "spa": 170, "spd": 95, "spe": 130 }
+    },
+    {
+      "name": "ガブリアス",
+      "types": ["ドラゴン", "じしん"],
+      "baseStats": { "hp": 108, "atk": 130, "def": 95, "spa": 80, "spd": 85, "spe": 102 }
     }
   ]
 }

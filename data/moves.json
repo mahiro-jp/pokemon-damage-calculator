@@ -1,8 +1,9 @@
 {
   "moves": [
-    { "name": "かえんほうしゃ", "type": "ほのお", "power": 90 },
-    { "name": "エアスラッシュ", "type": "ひこう", "power": 75 },
-    { "name": "りゅうせいぐん", "type": "ドラゴン", "power": 130 },
-    { "name": "あくのはどう", "type": "あく", "power": 80 }
+    { "name": "たたりめ", "type": "ゴースト", "power": 65, "category": "special" },
+    { "name": "ヘドロばくだん", "type": "どく", "power": 90, "category": "special" },
+    { "name": "きあいだま", "type": "かくとう", "power": 120, "category": "special" },
+    { "name": "げきりん", "type": "ドラゴン", "power": 120, "category": "physics" },
+    { "name": "じしん", "type": "じめん", "power": 100, "category": "physics" }
   ]
 }

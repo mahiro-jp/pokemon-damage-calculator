@@ -43,27 +43,36 @@ document.addEventListener( 'DOMContentLoaded', () => {
 // 攻撃側の実数値更新
 function updateAttackerStats() {
     const name = document.getElementById( 'attacker-name').value;
-    const point = document.getElementById( 'attacker-point').value;
+    const point = Number( document.getElementById( 'attacker-point').value);
     const nature = parseFloat(document.getElementById( 'attacker-nature').value);
+    const moveName = document.getElementById( 'move-name').value;
     const statsInput = document.getElementById( 'attacker-stats');
+    const labelEl = document.getElementById( 'attacker-stats-label');
+
+    const pokemon = pokemonMasterData.find( p => p.name === name);
+    const move = moveMasterData.find( m => m.name === moveName);
 
     // 能力ポイントを初期化
-    if (!name || point === "") {
+    if (!pokemon || point === "") {
         statsInput.value = 0;
         return;
     }
 
-    const pokemon = pokemonMasterData.find( p => p.name === name);
-    if ( pokemon) {
-        // (種族値 + 20 + ポイント) * 性格補正
-        const actual = Math.floor( ( pokemon.baseStats.atk + 20 + Number(point)) * nature);
-        statsInput.value = actual;
+    let base = pokemon.baseStats.atk;
+    labelEl.textContent = "攻撃実数値";
+
+    if ( move && move.category === "special") {
+        base = pokemon.baseStats.spa;
+        labelEl.textContent = "特攻実数値";
     }
+
+    // (種族値 + 20 + ポイント) * 性格補正
+    const actual = Math.floor( ( base + 20 + point) * nature);
+    statsInput.value = actual;
 }
 
 // 攻撃側の全初期化
 function resetAttackerConfig( fullReset = false) {
-        console.log( {fullReset});
     if ( fullReset) {
         document.getElementById( 'attacker-name').value = "";
     }
@@ -99,60 +108,54 @@ document.getElementById( 'move-name').addEventListener( 'input', (e) => {
         powerInput.value = 0;
     }
     document.getElementById( 'type-multiplier').value = "1.00";
+    updateAttackerStats();
+    updateDefenderStats();
 });
 
-// 実数値を計算して画面に反映する関数
-function updateActualStats() {
-    const attackerName = document.getElementById( 'attacker-name').value;
-    const pokemon = pokemonMasterData.find( p => p.name === attackerName);
-
-    if ( pokemon) {
-        const point = Number( document.getElementById('attacker-point').value);
-        const nature = parseFloat( document.getElementById( 'attacker-nature').value);
-
-        // TODO 攻撃か特攻のどちらを使うか判断
-        const base = pokemon.baseStats.atk;
-        // 実数値の計算 (種族値 + 20 + 能力ポイント) * 性格補正
-        const actualStats = Math.floor( (base + 20 + point) * nature);
-
-        document.getElementById( 'attacker-stats').value = actualStats;
-    }
-}
-
 // 攻撃側のイベント登録
-document.getElementById( 'attacker-name').addEventListener( 'input', updateActualStats);
-document.getElementById( 'attacker-point').addEventListener( 'input', updateActualStats);
-document.getElementById( 'attacker-nature').addEventListener( 'change', updateActualStats);
+document.getElementById( 'attacker-name').addEventListener( 'input', updateAttackerStats);
+document.getElementById( 'attacker-point').addEventListener( 'input', updateAttackerStats);
+document.getElementById( 'attacker-nature').addEventListener( 'change', updateAttackerStats);
 
 // 防御側の実数値を更新する関数
 function updateDefenderStats() {
-    const defenderName = document.getElementById( 'defender-name').value;
-    const defenderHpPoint = Number( document.getElementById( 'defender-hp-point').value);
-    const defenderDefPoint = Number( document.getElementById( 'defender-def-point').value);
-    const defenderHpInput = document.getElementById( 'defender-hp');
-    const defenderStatsInput = document.getElementById( 'defender-stats');
-    const pokemon = pokemonMasterData.find( p => p.name === defenderName);
+    const name = document.getElementById( 'defender-name').value;
+    const hpPoint = Number( document.getElementById( 'defender-hp-point').value);
+    const defPoint = Number( document.getElementById( 'defender-def-point').value);
+    const hpInput = document.getElementById( 'defender-hp');
+    const statsInput = document.getElementById( 'defender-stats');
+    const nature = parseFloat( document.getElementById( 'defender-nature').value);
+    const moveName = document.getElementById( 'move-name').value;
+    const labelEl = document.getElementById( 'defender-stats-label');
+    const defPointLabelEl = document.getElementById( 'defender-def-point-label');
+
+    const pokemon = pokemonMasterData.find( p => p.name === name);
+    const move = moveMasterData.find( m => m.name === moveName);
 
     // 能力ポイントを初期化
-    if (!defenderName || defenderHpPoint === "" || defenderDefPoint === "") {
-        defenderHpInput.value = 0;
-        defenderStatsInput.value = 0;
+    if (!pokemon || hpPoint === "" || defPoint === "") {
+        hpInput.value = 0;
+        statsInput.value = 0;
         return;
     }
 
-    if ( pokemon) {
-        const nature = parseFloat( document.getElementById( 'defender-nature').value);
+    // HP実数値の計算: 種族値 + 75 + ポイント
+    const actualHp = pokemon.baseStats.hp + 75 + hpPoint;
 
-        // HP実数値の計算: 種族値 + 75 + ポイント
-        const actualHp = pokemon.baseStats.hp + 75 + defenderHpPoint;
-        console.log( {actualHp});
+    let base = pokemon.baseStats.def;
+    labelEl.textContent = "防御実数値";
+    defPointLabelEl.textContent = "防御能力ポイント";
 
-        // 防御実数値の計算: (種族値 + 20 + ポイント) * 性格補正
-        const actualDef = Math.floor( (pokemon.baseStats.def + 20 + defenderDefPoint) * nature);
-
-        document.getElementById( 'defender-hp').value = actualHp;
-        document.getElementById( 'defender-stats').value = actualDef;
+    if ( move && move.category === "special") {
+        base = pokemon.baseStats.spd;
+        labelEl.textContent = "特防実数値";
+        defPointLabelEl.textContent = "特防能力ポイント";
     }
+    // 防御実数値の計算: (種族値 + 20 + ポイント) * 性格補正
+    const actualDef = Math.floor( (base + 20 + defPoint) * nature);
+
+    document.getElementById( 'defender-hp').value = actualHp;
+    document.getElementById( 'defender-stats').value = actualDef;
 }
 
 // 防御側のイベント登録
