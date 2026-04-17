@@ -65,14 +65,14 @@
                 <label>HP能力ポイント: 
                     <input type="number" id="defender-hp-point" value="0" min="0" max="32">
                 </label>
-                <label>HP実数値: <input type="number" id="defender-hp" value="0" readonly></label>
+                <label>HP実数値: <input type="number" id="defender-hp-stats" value="0" readonly></label>
                 <label>
                     <span id="defender-def-point-label">防御能力ポイント</span>: 
                     <input type="number" id="defender-def-point" value="0" min="0" max="32">
                 </label>
                 <label>
-                    <span id="defender-stats-label">防御実数値</span>: 
-                    <input type="number" id="defender-stats" value="0" readonly></label>
+                    <span id="defender-def-stats-label">防御実数値</span>: 
+                    <input type="number" id="defender-def-stats" value="0" readonly></label>
             </section>
 
             <button id="calc-btn">計算実行</button>
@@ -87,6 +87,7 @@
         </div>
     </div>
 
+    <script src="js/constants.js"></script>
     <script src="js/calculator.js"></script>
     <script src="js/main.js"></script>
 </body>
