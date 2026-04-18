@@ -17,30 +17,30 @@
         <div class="container">
             <section class="config-section">
                 <h2>攻撃側設定</h2>
-                <label>ポケモン名: 
+                <label>ポケモン名
                     <input type="text" id="attacker-name" list="pokemon-list">
                     <datalist id="pokemon-list"></datalist>
                 </label>
-                <label>性格補正: 
+                <label>性格補正
                     <select id="attacker-nature">
                         <option value="1.1">x1.1</option>
                         <option value="1.0" selected>x1</option>
                         <option value="0.9">x0.9</option>
                     </select>
                 </label>
-                <label>能力ポイント: 
+                <label>能力ポイント
                     <input type="number" id="attacker-point" value="0" min="0" max="32">
                 </label>
                 <label>
-                    <span id="attacker-stats-label">こうげき</span>: 
+                    <span id="attacker-stats-label">こうげき</span>
                     <input type="number" id="attacker-stats" value="0" readonly></label>
-                <label>技名: 
+                <label>技名
                     <input type="text" id="move-name" list="move-list">
                     <datalist id="move-list"></datalist>
                 </label>
-                <label>技威力: <input type="number" id="move-power" value="0"></label>
+                <label>技威力<input type="number" id="move-power" value="0"></label>
                 <input type="hidden" id="move-type">
-                <label>タイプ相性:
+                <label>タイプ相性
                     <select id="type-multiplier">
                         <option value="4.00">x4</option>
                         <option value="2.00">x2</option>
@@ -52,26 +52,26 @@
             </section>
             <section class="config-section">
                 <h2>防御側設定</h2>
-                <label>ポケモン名: 
+                <label>ポケモン名
                     <input type="text" id="defender-name" list="pokemon-list">
                 </label>
-                <label>性格補正: 
+                <label>性格補正
                     <select id="defender-nature">
                         <option value="1.1">x1.1</option>
                         <option value="1.0" selected>x1</option>
                         <option value="0.9">x0.9</option>
                     </select>
                 </label>
-                <label>HP能力ポイント: 
+                <label>HP能力ポイント
                     <input type="number" id="defender-hp-point" value="0" min="0" max="32">
                 </label>
-                <label>HP実数値: <input type="number" id="defender-hp-stats" value="0" readonly></label>
+                <label>HP実数値<input type="number" id="defender-hp-stats" value="0" readonly></label>
                 <label>
-                    <span id="defender-def-point-label">ぼうぎょ能力ポイント</span>: 
+                    <span id="defender-def-point-label">ぼうぎょ能力ポイント</span>
                     <input type="number" id="defender-def-point" value="0" min="0" max="32">
                 </label>
                 <label>
-                    <span id="defender-def-stats-label">ぼうぎょ実数値</span>: 
+                    <span id="defender-def-stats-label">ぼうぎょ実数値</span>
                     <input type="number" id="defender-def-stats" value="0" readonly></label>
             </section>
 
@@ -81,7 +81,7 @@
 
             <section id="result-area">
                 <h2>計算結果</h2>
-                <p>ダメージ: <span id="damage-range">---</span></p>
+                <p>ダメージ<span id="damage-range">---</span></p>
                 <p>割合: <span id="damage-percent">---</span></p>
             </section>
         </div>
