@@ -29,12 +29,11 @@ const UI = {
 }
 
 const inputElements = [
-    UI.attacker.name,
+    // ポケモンは変更時の初期化処理があるため登録不要
     UI.attacker.nature,
     UI.attacker.point,
     UI.attacker.moveName,
     UI.attacker.movePower,
-    UI.defender.name,
     UI.defender.nature,
     UI.defender.hpPoint,
     UI.defender.defPoint
@@ -114,6 +113,8 @@ function updateAll() {
     updateDefenderStats();
     // 技情報の更新
     updateMoveInfo();
+    // 検索結果を初期化
+    resetResult();
 }
 
 /**
@@ -206,6 +207,7 @@ function resetAttacker() {
     UI.attacker.typeMultiplier.value = "1.00";
 
     updateAttackerStats();
+    updateAll();
 }
 
 /**
@@ -218,6 +220,15 @@ function resetDefender() {
     UI.attacker.typeMultiplier.value = "1.00";
 
     updateDefenderStats();
+    updateAll();
+}
+
+/**
+ * 計算結果を初期化
+ */
+function resetResult() {
+    UI.common.damageRange.textContent = "---";
+    UI.common.damagePercent.textContent = "---";
 }
 
 /**
@@ -229,6 +240,12 @@ function executeDamageCalculation() {
     const defense = Number( UI.defender.defStatus.value);
     const movePower = Number( UI.attacker.movePower.value);
     const multiplier = parseFloat( UI.attacker.typeMultiplier.value);
+
+    // HPが設定されない場合は計算不要
+    if ( hp <= 0 || attack <= 0 || defense <= 0) {
+        resetResult();
+        return;
+    }
 
     const attackerName = UI.attacker.name.value;
     const attacker = pokemonMasterData.find( p => p.name === attackerName);

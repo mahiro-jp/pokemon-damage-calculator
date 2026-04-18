@@ -87,6 +87,11 @@ input[readonly] {
     cursor: not-allowed;
 }
 
+#attacker-stats-label, #defender-hp-status-label, #defender-def-stats-label {
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
 #calc-btn {
     width: 100%;
     padding: 15px;
