@@ -49,6 +49,12 @@ inputElements.forEach ( el => {
 UI.attacker.name.addEventListener( 'change', resetAttacker);
 UI.defender.name.addEventListener( 'change', resetDefender);
 
+// ポケモンをクリック時に入力をクリアする
+UI.attacker.name.addEventListener( 'focus', onFocus);
+UI.defender.name.addEventListener( 'focus', onFocus);
+UI.attacker.name.addEventListener( 'blur', onBlur);
+UI.defender.name.addEventListener( 'blur', onBlur);
+
 // 計算ボタンの処理
 UI.common.calcBtn.addEventListener( 'click', executeDamageCalculation);
 
@@ -239,6 +245,30 @@ function executeDamageCalculation() {
     const minPercent = ( ( result.min / hp) * 100).toFixed(1);
     const maxPercent = ( ( result.max / hp) * 100).toFixed(1);
     percentEl.textContent = `${minPercent}% ～ ${maxPercent}%`;
+}
+
+// クリア前の値を一時的に保持
+let tempName = "";
+
+/**
+ * フォーカス時に値をクリアする
+ * @param {*} e イベント
+ */
+function onFocus( e) {
+    tempName = e.target.value;
+    e.target.value = "";
+    updateAll();
+}
+
+/**
+ * フォーカスが外れて未入力の場合はクリア前の値に復元する
+ * @param {*} e イベント
+ */
+function onBlur( e) {
+    if ( e.target.value === "" && tempName !== "") {
+        e.target.value = tempName;
+        updateAll();
+    }
 }
 
 // Service Workerの登録
