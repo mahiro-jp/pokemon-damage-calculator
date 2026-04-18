@@ -114,6 +114,30 @@ const Calculator = {
     },
 
     /**
+     * 技と受けるポケモンからタイプ相性を取得します。
+     * @param {*} move 技
+     * @param {*} defender 受けるポケモン
+     * @returns タイプ相性の倍率
+     */
+    getEffectiveness: ( move, defender) => {
+        const moveType = move.type;
+        const chart = CONST.TYPE_CHART[ moveType];
+        const defenderTypes = defender.types;
+ 
+        let multiplier = 1.0;
+        if ( !chart || !defenderTypes) {
+            return multiplier;
+        }
+
+        defenderTypes.forEach( defenderType => {
+            if ( chart[ defenderType] !== undefined) {
+                multiplier *= chart[ defenderType];
+            }
+        });
+        return multiplier;
+    },
+
+    /**
      * ダメージ計算をする。
      * @param {*} attack 攻撃/特攻の実数値
      * @param {*} power 技威力

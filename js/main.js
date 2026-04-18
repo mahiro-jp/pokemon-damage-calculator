@@ -186,13 +186,18 @@ function updateDefenderStats() {
 function updateMoveInfo() {
     const moveName = UI.attacker.moveName.value;
     const move = moveMasterData.find( m => m.name === moveName);
+    const defenderName = UI.defender.name.value;
+    const defender = pokemonMasterData.find( p => p.name === defenderName);
 
     UI.attacker.movePower.value = 0;
     UI.attacker.typeMultiplier.value = "1.00";
 
-    if (move) {
+    if ( move) {
         UI.attacker.movePower.value = move.power;
-        // TODO タイプ相性の自動判定
+    }
+    if ( move && defender) {
+        const effectiveness = Calculator.getEffectiveness( move, defender);
+        UI.attacker.typeMultiplier.value = effectiveness.toFixed( 2);
     }
 }
 
