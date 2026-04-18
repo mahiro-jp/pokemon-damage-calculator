@@ -52,8 +52,10 @@ UI.defender.name.addEventListener( 'change', resetDefender);
 // ポケモンをクリック時に入力をクリアする
 UI.attacker.name.addEventListener( 'focus', onFocus);
 UI.defender.name.addEventListener( 'focus', onFocus);
+UI.attacker.moveName.addEventListener( 'focus', onFocus);
 UI.attacker.name.addEventListener( 'blur', onBlur);
 UI.defender.name.addEventListener( 'blur', onBlur);
+UI.attacker.moveName.addEventListener( 'blur', onBlur);
 
 // 計算ボタンの処理
 UI.common.calcBtn.addEventListener( 'click', executeDamageCalculation);
