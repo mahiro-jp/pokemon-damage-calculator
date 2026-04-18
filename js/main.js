@@ -59,7 +59,10 @@ let pokemonMasterData = [];
 let moveMasterData = [];
 
 // データ読み込み
-document.addEventListener( 'DOMContentLoaded', loadData);
+document.addEventListener( 'DOMContentLoaded', () => {
+    loadData();
+    updateAll();
+});
 
 /**
  * データを読み込みます。
