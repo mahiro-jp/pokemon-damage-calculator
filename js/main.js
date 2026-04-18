@@ -28,111 +28,38 @@ const UI = {
     },
 }
 
+const inputElements = [
+    UI.attacker.name,
+    UI.attacker.nature,
+    UI.attacker.point,
+    UI.attacker.moveName,
+    UI.attacker.movePower,
+    UI.attacker.typeMultiplier,
+    UI.defender.name,
+    UI.defender.nature,
+    UI.defender.hpPoint,
+    UI.defender.defPoint
+];
+
+// 入力項目にイベントを一括設定
+inputElements.forEach ( el => {
+    el.addEventListener( 'input', updateAll);
+});
+
+// ポケモン変更時は入力項目を初期化する
+UI.attacker.name.addEventListener( 'change', resetAttacker);
+UI.defender.name.addEventListener( 'change', resetDefender);
+
+// 計算ボタンの処理
+UI.common.calcBtn.addEventListener( 'click', executeDamageCalculation);
+
 // ポケモンデータ
 let pokemonMasterData = [];
 // 技データ
 let moveMasterData = [];
 
-document.addEventListener( 'DOMContentLoaded', () => {
-    // データ読み込み
-    loadData();
-
-    UI.common.calcBtn.addEventListener( 'click', () => {
-        // 入力値の取得
-        const attack = Number( UI.attacker.status.value);
-        const power = Number( UI.attacker.movePower.value);
-        const multiplier = parseFloat( UI.attacker.typeMultiplier.value);
-        const hp = Number( UI.defender.hpStatus.value);
-        const defense = Number( UI.defender.defStatus.value);
-
-        // 2. タイプ一致補正の判定
-        const attackerName = UI.attacker.name.value;
-        const moveName = UI.attacker.moveName.value;
-
-        // データ群から選択中の個体を特定
-        const attacker = pokemonMasterData.find( p => p.name === attackerName);
-        const move = moveMasterData.find( m => m.name === moveName);
-
-        let isSameType = Calculator.isSameType( attacker, move);
-
-        // 計算実行
-        const result = Calculator.calculateDamage( attack, power, defense, multiplier, isSameType);
-
-        // 結果の表示
-        const rangeEl = UI.common.damageRange;
-        const percentEl = UI.common.damagePercent;
-        rangeEl.textContent = `${result.min} ～ ${result.max}`;
-
-        // 割合の計算 (ダメージ / HP * 100)
-        const minPercent = ((result.min / hp) * 100).toFixed(1);
-        const maxPercent = ((result.max / hp) * 100).toFixed(1);
-        percentEl.textContent = `${minPercent}% ～ ${maxPercent}%`;
-    });
-});
-
-// 攻撃側ポケモン名の変更アクション
-UI.attacker.name.addEventListener( 'input', (e) => {
-    if ( e.target.value === "") {
-        // ポケモン未設定
-        resetAttacker( true);
-    } else {
-        const pokemon = pokemonMasterData.find( p => p.name === e.target.value);
-        if ( pokemon) {
-            resetAttacker( false); 
-        }
-    }
-});
-
-// 技名の変更アクション
-UI.attacker.moveName.addEventListener( 'input', (e) => {
-    const move = moveMasterData.find( m => m.name === e.target.value);
-    const powerInput = UI.attacker.movePower;
-
-    if ( move) {
-        powerInput.value = move.power;
-    } else {
-        powerInput.value = 0;
-    }
-    UI.attacker.typeMultiplier.value = "1.00";
-    updateAttackerStats();
-    updateDefenderStats();
-});
-
-// 攻撃側のイベント登録
-UI.attacker.name.addEventListener( 'input', updateAttackerStats);
-UI.attacker.point.addEventListener( 'input', updateAttackerStats);
-UI.attacker.nature.addEventListener( 'change', updateAttackerStats);
-
-// 防御側のイベント登録
-UI.defender.name.addEventListener( 'input', updateDefenderStats);
-UI.defender.hpPoint.addEventListener( 'input', updateDefenderStats);
-UI.defender.defPoint.addEventListener( 'input', updateDefenderStats);
-UI.defender.nature.addEventListener( 'change', updateDefenderStats);
-
-// 防御側ポケモン名の変更アクション
-UI.defender.name.addEventListener( 'input', (e) => {
-    if ( e.target.value === "") {
-        // ポケモン未設定
-        resetDefender( true);
-    } else {
-        const pokemon = pokemonMasterData.find( p => p.name === e.target.value);
-        if ( pokemon) {
-            resetDefender( false); 
-        }
-    }
-});
-
-// 技とタイプ一致補正の更新
-function updateMovePower() {
-    const moveName = UI.attacker.moveName.value;
-    const move = moveMasterData.find(m => m.name === moveName);
-
-    if (move) {
-        UI.attacker.movePower.value = move.power;
-    }
-}
-
-UI.attacker.moveName.addEventListener('input', updateMovePower);
+// データ読み込み
+document.addEventListener( 'DOMContentLoaded', loadData);
 
 /**
  * データを読み込みます。
@@ -165,6 +92,18 @@ async function loadData() {
     } catch ( error) {
         console.error( "データの読み込みに失敗しました", error);
     }
+}
+
+/**
+ * 画面全体を更新する
+ */
+function updateAll() {
+    // 攻撃側の更新
+    updateAttackerStats();
+    // 防御側の更新
+    updateDefenderStats();
+    // 技情報の更新
+    updateMoveInfo();
 }
 
 /**
@@ -231,13 +170,25 @@ function updateDefenderStats() {
 }
 
 /**
- * 攻撃側の初期化
- * @param {*} fullReset ポケモンもクリアするか
+ * 技の情報を更新する
  */
-function resetAttacker( fullReset = false) {
-    if ( fullReset) {
-        UI.attacker.name.value = "";
+function updateMoveInfo() {
+    const moveName = UI.attacker.moveName.value;
+    const move = moveMasterData.find( m => m.name === moveName);
+
+    UI.attacker.movePower.value = 0;
+    UI.attacker.typeMultiplier.value = "1.00";
+
+    if (move) {
+        UI.attacker.movePower.value = move.power;
+        // TODO タイプ相性の自動判定
     }
+}
+
+/**
+ * 攻撃側の初期化
+ */
+function resetAttacker() {
     UI.attacker.nature.value = "1.0";
     UI.attacker.point.value = 32;
     UI.attacker.moveName.value = "";
@@ -249,18 +200,43 @@ function resetAttacker( fullReset = false) {
 
 /**
  * 防御側の初期化
- * @param {*} fullReset ポケモンもクリアするか
  */
-function resetDefender( fullReset = false) {
-    if ( fullReset) {
-        UI.defender.name.value = "";
-    }
+function resetDefender() {
     UI.defender.nature.value = "1.0";
     UI.defender.hpPoint.value = 0;
     UI.defender.defPoint.value = 0;
     UI.attacker.typeMultiplier.value = "1.00";
 
     updateDefenderStats();
+}
+
+/**
+ * ダメージ計算を実行する
+ */
+function executeDamageCalculation() {
+    const attack = Number( UI.attacker.status.value);
+    const hp = Number( UI.defender.hpStatus.value);
+    const defense = Number( UI.defender.defStatus.value);
+    const movePower = Number( UI.attacker.movePower.value);
+    const multiplier = parseFloat( UI.attacker.typeMultiplier.value);
+
+    const attackerName = UI.attacker.name.value;
+    const attacker = pokemonMasterData.find( p => p.name === attackerName);
+    const moveName = UI.attacker.moveName.value;
+    const move = moveMasterData.find( m => m.name === moveName);
+
+    const sameType = Calculator.isSameType( attacker, move);
+
+    // 計算処理
+    const result = Calculator.calculateDamage( attack, movePower, defense, multiplier, sameType);
+
+    const rangeEl = UI.common.damageRange;
+    rangeEl.textContent = `${result.min} ～ ${result.max}`;
+
+    const percentEl = UI.common.damagePercent;
+    const minPercent = ( ( result.min / hp) * 100).toFixed(1);
+    const maxPercent = ( ( result.max / hp) * 100).toFixed(1);
+    percentEl.textContent = `${minPercent}% ～ ${maxPercent}%`;
 }
 
 // Service Workerの登録
