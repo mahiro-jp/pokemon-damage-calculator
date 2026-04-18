@@ -8,9 +8,12 @@ const CONST = {
         SPE: "すばやさ",
     },
     POINT: {
-        ATK: "能力ポイント",
+        HP: "HP能力ポイント",
+        ATK: "こうげき能力ポイント",
         DEF: "ぼうぎょ能力ポイント",
+        SPA: "とくこう能力ポイント",
         SPD: "とくぼう能力ポイント",
+        SPE: "すばやさ能力ポイント",
     },
     CATEGORY: {
         PHYSICAL: "physical",

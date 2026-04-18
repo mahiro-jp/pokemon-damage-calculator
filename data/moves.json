@@ -3,7 +3,7 @@
     { "name": "たたりめ", "type": "ゴースト", "power": 65, "category": "special" },
     { "name": "ヘドロばくだん", "type": "どく", "power": 90, "category": "special" },
     { "name": "きあいだま", "type": "かくとう", "power": 120, "category": "special" },
-    { "name": "げきりん", "type": "ドラゴン", "power": 120, "category": "physics" },
-    { "name": "じしん", "type": "じめん", "power": 100, "category": "physics" }
+    { "name": "げきりん", "type": "ドラゴン", "power": 120, "category": "physical" },
+    { "name": "じしん", "type": "じめん", "power": 100, "category": "physical" }
   ]
 }
