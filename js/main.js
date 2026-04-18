@@ -34,7 +34,6 @@ const inputElements = [
     UI.attacker.point,
     UI.attacker.moveName,
     UI.attacker.movePower,
-    UI.attacker.typeMultiplier,
     UI.defender.name,
     UI.defender.nature,
     UI.defender.hpPoint,
