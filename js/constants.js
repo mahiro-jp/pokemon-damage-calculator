@@ -46,7 +46,17 @@ const CONST = {
         // その他
         POKEMON_LIST: "pokemon-list",
         MOVE_LIST: "move-list",
-    }
+    },
+    CALC: {
+        BASE_HP_ADDITION: 75,
+        BASE_STATUS_ADDITION: 20,
+        LEVEL_CONST: 22,
+        CALC_DAMAGE_DIVISOR: 50,
+        CALC_DAMAGE_ADDITION: 2,
+        SAME_TYPE_MULTIPLIER: 1.5,
+        RANDOM_MIN: 0.85,
+        RANDOM_MAX: 1.00,
+    },
 };
 
 Object.freeze( CONST);

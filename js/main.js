@@ -1,4 +1,10 @@
+// ポケモンデータ
+let pokemonMasterData = [];
+// 技データ
+let moveMasterData = [];
+
 document.addEventListener( 'DOMContentLoaded', () => {
+    // データ読み込み
     loadData();
 
     const calcBtn = document.getElementById( CONST.SELECTOR.CALC_BTN);
@@ -19,14 +25,10 @@ document.addEventListener( 'DOMContentLoaded', () => {
         const attacker = pokemonMasterData.find( p => p.name === attackerName);
         const move = moveMasterData.find( m => m.name === moveName);
 
-        let isSameType = false;
-        if (attacker && move) {
-            // 攻撃側のタイプ配列に、技のタイプが含まれているかチェック
-            isSameType = attacker.types.includes(move.type);
-        }
+        let isSameType = Calculator.isSameType( attacker, move);
 
         // 計算実行
-        const result = calculateDamage( attack, power, defense, multiplier, isSameType);
+        const result = Calculator.calculateDamage( attack, power, defense, multiplier, isSameType);
 
         // 結果の表示
         const rangeEl = document.getElementById( CONST.SELECTOR.DAMAGE_RANGE);
@@ -40,59 +42,15 @@ document.addEventListener( 'DOMContentLoaded', () => {
     });
 });
 
-// 攻撃側の実数値更新
-function updateAttackerStats() {
-    const name = document.getElementById( CONST.SELECTOR.ATTACKER_NAME).value;
-    const point = Number( document.getElementById( CONST.SELECTOR.ATTACKER_POINT).value);
-    const nature = parseFloat(document.getElementById( CONST.SELECTOR.ATTACKER_NATURE).value);
-    const moveName = document.getElementById( CONST.SELECTOR.MOVE_NAME).value;
-    const statsInput = document.getElementById( CONST.SELECTOR.ATTACKER_STATS);
-    const labelEl = document.getElementById( CONST.SELECTOR.ATTACKER_STATS_LABEL);
-
-    const pokemon = pokemonMasterData.find( p => p.name === name);
-    const move = moveMasterData.find( m => m.name === moveName);
-
-    // 能力ポイントを初期化
-    if (!pokemon || point === "") {
-        statsInput.value = 0;
-        return;
-    }
-
-    let base = pokemon.baseStats.atk;
-    labelEl.textContent = CONST.STATUS.ATK;
-
-    if ( move && move.category === CONST.CATEGORY.SPECIAL) {
-        base = pokemon.baseStats.spa;
-        labelEl.textContent = CONST.STATUS.SPA;
-    }
-
-    // (種族値 + 20 + ポイント) * 性格補正
-    const actual = Math.floor( ( base + 20 + point) * nature);
-    statsInput.value = actual;
-}
-
-// 攻撃側の全初期化
-function resetAttackerConfig( fullReset = false) {
-    if ( fullReset) {
-        document.getElementById( CONST.SELECTOR.ATTACKER_NAME).value = "";
-    }
-    document.getElementById( CONST.SELECTOR.ATTACKER_NATURE).value = "1.0";
-    document.getElementById( CONST.SELECTOR.ATTACKER_POINT).value = 32;
-    document.getElementById( CONST.SELECTOR.MOVE_NAME).value = "";
-    document.getElementById( CONST.SELECTOR.MOVE_POWER).value = 0;
-    document.getElementById( CONST.SELECTOR.TYPE_MULTIPLIER).value = "1.00";
-    updateAttackerStats();
-}
-
 // 攻撃側ポケモン名の変更アクション
 document.getElementById( CONST.SELECTOR.ATTACKER_NAME).addEventListener( 'input', (e) => {
     if ( e.target.value === "") {
         // ポケモン未設定
-        resetAttackerConfig( true);
+        resetAttacker( true);
     } else {
         const pokemon = pokemonMasterData.find( p => p.name === e.target.value);
         if ( pokemon) {
-            resetAttackerConfig( false); 
+            resetAttacker( false); 
         }
     }
 });
@@ -117,98 +75,56 @@ document.getElementById( CONST.SELECTOR.ATTACKER_NAME).addEventListener( 'input'
 document.getElementById( CONST.SELECTOR.ATTACKER_POINT).addEventListener( 'input', updateAttackerStats);
 document.getElementById( CONST.SELECTOR.ATTACKER_NATURE).addEventListener( 'change', updateAttackerStats);
 
-// 防御側の実数値を更新する関数
-function updateDefenderStats() {
-    const name = document.getElementById( CONST.SELECTOR.DEFENDER_NAME).value;
-    const hpPoint = Number( document.getElementById( CONST.SELECTOR.DEFENDER_HP_POINT).value);
-    const defPoint = Number( document.getElementById( CONST.SELECTOR.DEFENDER_DEF_POINT).value);
-    const hpInput = document.getElementById( CONST.SELECTOR.DEFENDER_HP_STATS);
-    const statsInput = document.getElementById( CONST.SELECTOR.DEFENDER_DEF_STATS);
-    const nature = parseFloat( document.getElementById( CONST.SELECTOR.DEFENDER_NATURE).value);
-    const moveName = document.getElementById( CONST.SELECTOR.MOVE_NAME).value;
-    const labelEl = document.getElementById( CONST.SELECTOR.DEFENDER_DEF_STATS_LABEL);
-    const defPointLabelEl = document.getElementById( CONST.SELECTOR.DEFENDER_DEF_POINT_LABEL);
-
-    const pokemon = pokemonMasterData.find( p => p.name === name);
-    const move = moveMasterData.find( m => m.name === moveName);
-
-    // 能力ポイントを初期化
-    if (!pokemon || hpPoint === "" || defPoint === "") {
-        hpInput.value = 0;
-        statsInput.value = 0;
-        return;
-    }
-
-    // HP実数値の計算: 種族値 + 75 + ポイント
-    const actualHp = pokemon.baseStats.hp + 75 + hpPoint;
-
-    let base = pokemon.baseStats.def;
-    labelEl.textContent = CONST.STATUS.DEF;
-    defPointLabelEl.textContent = CONST.POINT.DEF;
-
-    if ( move && move.category === "special") {
-        base = pokemon.baseStats.spd;
-        labelEl.textContent = CONST.STATUS.SPD;
-        defPointLabelEl.textContent = CONST.POINT.SPD;
-    }
-    // 防御実数値の計算: (種族値 + 20 + ポイント) * 性格補正
-    const actualDef = Math.floor( (base + 20 + defPoint) * nature);
-
-    document.getElementById( CONST.SELECTOR.DEFENDER_HP_STATS).value = actualHp;
-    document.getElementById( CONST.SELECTOR.DEFENDER_DEF_STATS).value = actualDef;
-}
-
 // 防御側のイベント登録
 document.getElementById( CONST.SELECTOR.DEFENDER_NAME).addEventListener( 'input', updateDefenderStats);
 document.getElementById( CONST.SELECTOR.DEFENDER_HP_POINT).addEventListener( 'input', updateDefenderStats);
 document.getElementById( CONST.SELECTOR.DEFENDER_DEF_POINT).addEventListener( 'input', updateDefenderStats);
 document.getElementById( CONST.SELECTOR.DEFENDER_NATURE).addEventListener( 'change', updateDefenderStats);
 
-// 防御側の全初期化
-function resetDefenderConfig( fullReset = false) {
-    if ( fullReset) {
-        document.getElementById( CONST.SELECTOR.DEFENDER_NAME).value = "";
-    }
-    document.getElementById( CONST.SELECTOR.DEFENDER_NATURE).value = "1.0";
-    document.getElementById( CONST.SELECTOR.DEFENDER_HP_POINT).value = 0;
-    document.getElementById( CONST.SELECTOR.DEFENDER_DEF_POINT).value = 0;
-    document.getElementById( CONST.SELECTOR.TYPE_MULTIPLIER).value = "1.00";
-    updateDefenderStats();
-}
-
 // 防御側ポケモン名の変更アクション
 document.getElementById( CONST.SELECTOR.DEFENDER_NAME).addEventListener( 'input', (e) => {
     if ( e.target.value === "") {
         // ポケモン未設定
-        resetDefenderConfig( true);
+        resetDefender( true);
     } else {
         const pokemon = pokemonMasterData.find( p => p.name === e.target.value);
         if ( pokemon) {
-            resetDefenderConfig( false); 
+            resetDefender( false); 
         }
     }
 });
 
-let pokemonMasterData = [];
-let moveMasterData = [];
+// 技とタイプ一致補正の更新
+function updateMovePower() {
+    const moveName = document.getElementById( CONST.SELECTOR.MOVE_NAME).value;
+    const move = moveMasterData.find(m => m.name === moveName);
 
-// データの読み込み
+    if (move) {
+        document.getElementById( CONST.SELECTOR.MOVE_POWER).value = move.power;
+    }
+}
+
+document.getElementById( CONST.SELECTOR.MOVE_NAME).addEventListener('input', updateMovePower);
+
+/**
+ * データを読み込みます。
+ */
 async function loadData() {
     try {
-        const response = await fetch( 'data/pokemon.json');
-        const data = await response.json();
-        pokemonMasterData = data.pokemon;
+        const pokemonResponse = await fetch( 'data/pokemon.json');
+        const pokemonData = await pokemonResponse.json();
+        pokemonMasterData = pokemonData.pokemon;
 
-        const list = document.getElementById( CONST.SELECTOR.POKEMON_LIST);
+        const pokemonList = document.getElementById( CONST.SELECTOR.POKEMON_LIST);
         pokemonMasterData.forEach( p => {
             const option = document.createElement( 'option');
             option.value = p.name;
-            list.appendChild( option);
+            pokemonList.appendChild( option);
         });
         console.log( "ポケモンデータを読み込みました");
 
-        const moveRes = await fetch( 'data/moves.json');
-        const moveData = await moveRes.json();
+        const moveResponse = await fetch( 'data/moves.json');
+        const moveData = await moveResponse.json();
         moveMasterData = moveData.moves;
 
         const moveList = document.getElementById( CONST.SELECTOR.MOVE_LIST);
@@ -223,17 +139,101 @@ async function loadData() {
     }
 }
 
-// 技とタイプ一致補正の更新
-function updateMovePower() {
+/**
+ * 攻撃側の値を更新する
+ */
+function updateAttackerStats() {
+    // ポケモンの入力情報
+    const attackerName = document.getElementById( CONST.SELECTOR.ATTACKER_NAME).value;
+    const nature = parseFloat( document.getElementById( CONST.SELECTOR.ATTACKER_NATURE).value || 1.0);
+    const point = Number( document.getElementById( CONST.SELECTOR.ATTACKER_POINT).value || 0);
     const moveName = document.getElementById( CONST.SELECTOR.MOVE_NAME).value;
-    const move = moveMasterData.find(m => m.name === moveName);
 
-    if (move) {
-        document.getElementById( CONST.SELECTOR.MOVE_POWER).value = move.power;
-    }
+    // こうげき/とくこうの項目
+    const statusLabel = document.getElementById( CONST.SELECTOR.ATTACKER_STATS_LABEL);
+    const statsInput = document.getElementById( CONST.SELECTOR.ATTACKER_STATS);
+
+    // データ取得
+    const pokemon = pokemonMasterData.find( p => p.name === attackerName);
+    const move = moveMasterData.find( m => m.name === moveName);
+
+    // 技の物理/特殊に合わせて実数値を計算
+    const attackerBaseStatus = Calculator.getAttackerBaseStatusByMoveCategory( pokemon, move);
+    let status = Calculator.calculateStatus( attackerBaseStatus.status, point, nature);
+
+    // 実数値を画面に反映
+    statusLabel.textContent = attackerBaseStatus.label;
+    statsInput.value = status;
 }
 
-document.getElementById( CONST.SELECTOR.MOVE_NAME).addEventListener('input', updateMovePower);
+/**
+ * 防御側の値を更新する。
+ */
+function updateDefenderStats() {
+    // ポケモンの入力情報
+    const pokemonName = document.getElementById( CONST.SELECTOR.DEFENDER_NAME).value;
+    const nature = parseFloat( document.getElementById( CONST.SELECTOR.DEFENDER_NATURE).value);
+    const hpPoint = Number( document.getElementById( CONST.SELECTOR.DEFENDER_HP_POINT).value);
+    const defPoint = Number( document.getElementById( CONST.SELECTOR.DEFENDER_DEF_POINT).value);
+    const moveName = document.getElementById( CONST.SELECTOR.MOVE_NAME).value;
+
+    // HP、ぼうぎょ/とくぼうの項目
+    const defPointLabel = document.getElementById( CONST.SELECTOR.DEFENDER_DEF_POINT_LABEL);
+    const hpStatusInput = document.getElementById( CONST.SELECTOR.DEFENDER_HP_STATS);
+    const defStatsLabel = document.getElementById( CONST.SELECTOR.DEFENDER_DEF_STATS_LABEL);
+    const defStatsInput = document.getElementById( CONST.SELECTOR.DEFENDER_DEF_STATS);
+
+    // データ取得
+    const pokemon = pokemonMasterData.find( p => p.name === pokemonName);
+    const move = moveMasterData.find( m => m.name === moveName);
+
+    // HPの計算
+    let hpBaseStatus = Calculator.getHpBaseStatus( pokemon);
+    let hpStatus = Calculator.calculateHp( hpBaseStatus, hpPoint);
+
+    // 技の物理/特殊に合わせて実数値を計算
+    const defenderBaseStatus = Calculator.getDefenderBaseStatusByMoveCategory( pokemon, move);
+    let defStatus = Calculator.calculateStatus( defenderBaseStatus.status, defPoint, nature);
+
+    // 実数値を画面に反映
+    hpStatusInput.value = hpStatus;
+    defPointLabel.textContent = defenderBaseStatus.pointLabel;
+    defStatsLabel.textContent = defenderBaseStatus.label;
+    defStatsInput.value = defStatus;
+}
+
+/**
+ * 攻撃側の初期化
+ * @param {*} fullReset ポケモンもクリアするか
+ */
+function resetAttacker( fullReset = false) {
+    if ( fullReset) {
+        document.getElementById( CONST.SELECTOR.ATTACKER_NAME).value = "";
+    }
+    document.getElementById( CONST.SELECTOR.ATTACKER_NATURE).value = "1.0";
+    document.getElementById( CONST.SELECTOR.ATTACKER_POINT).value = 32;
+    document.getElementById( CONST.SELECTOR.MOVE_NAME).value = "";
+    document.getElementById( CONST.SELECTOR.MOVE_POWER).value = 0;
+    document.getElementById( CONST.SELECTOR.TYPE_MULTIPLIER).value = "1.00";
+
+    updateAttackerStats();
+}
+
+/**
+ * 防御側の初期化
+ * @param {*} fullReset ポケモンもクリアするか
+ */
+function resetDefender( fullReset = false) {
+    if ( fullReset) {
+        document.getElementById( CONST.SELECTOR.DEFENDER_NAME).value = "";
+    }
+    document.getElementById( CONST.SELECTOR.DEFENDER_NATURE).value = "1.0";
+    document.getElementById( CONST.SELECTOR.DEFENDER_HP_POINT).value = 0;
+    document.getElementById( CONST.SELECTOR.DEFENDER_DEF_POINT).value = 0;
+    document.getElementById( CONST.SELECTOR.TYPE_MULTIPLIER).value = "1.00";
+
+    updateDefenderStats();
+}
 
 // Service Workerの登録
 if ( 'serviceWorker' in navigator) {
