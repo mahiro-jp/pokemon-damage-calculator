@@ -297,6 +297,6 @@ function onBlur( e) {
 
 // Service Workerの登録
 if ( 'serviceWorker' in navigator) {
-    navigator.serviceWorker.register( 'sw.js')
+    navigator.serviceWorker.register( 'js/sw.js')
         .then(() => console.log( 'Service Worker Registered'));
 }
